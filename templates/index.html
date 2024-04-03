@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Carrinho de Compras</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}" />
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Carrinho de Compras</h1>
+    </header>
+
+    <div class="container">
+      <div class="product-list">
+        <h2>Produtos</h2>
+
+        <form method="GET" action="/">
+          <input type="text" name="search" placeholder="O que deseja?" value="{{ search_query }}" />
+          <input type="number" name="min_price" step="0.01" placeholder="Preço mínimo" value="{{ min_price }}" />
+          <input type="number" name="max_price" step="0.01" placeholder="Preço máximo" value="{{ max_price }}" />
+          <button type="submit">Pesquisar</button>
+        </form>
+
+        <ul>
+          {% for product in products %}
+          <li class="product-item">
+            <div><strong>{{ product.name }}</strong> - R${{ product.price }}</div>
+            <form method="POST" action="/cart">
+              <input type="hidden" name="product_id" value="{{ product.id }}" />
+              <input type="number" name="quantity" min="1" value="1" />
+              <button type="submit">Adicionar ao Carrinho</button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="cart">
+        <h2>Carrinho de Compras</h2>
+        <ul>
+          {% for item in cart %}
+          <li>
+            <div><strong>{{ item.product.name }}</strong> - R${{ item.product.price }} x {{ item.quantity }}</div>
+            <form method="POST" action="/cart/remove">
+              <input type="hidden" name="product_id" value="{{ item.product.id }}" />
+              <button type="submit">Remover do Carrinho</button>
+            </form>
+          </li>
+          {% endfor %}
+        </ul>
+        <div class="total-price">
+          <h3>Total: R${{ total_price }}</h3>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
